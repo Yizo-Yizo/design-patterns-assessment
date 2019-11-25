@@ -1,4 +1,8 @@
-﻿namespace GreatQuotes.Data {
+﻿using GreatQuotes.ViewModels;
+using System;
+using System.Collections.Generic;
+
+namespace GreatQuotes.Data {
     public class GreatQuote {
         private string _author;
         private string _quoteText;
@@ -24,6 +28,27 @@
         public GreatQuote(string author, string quoteText) {
             Author = author;
             QuoteText = quoteText;
+        }
+
+        public class QuoteManager
+        {
+            static readonly Lazy<QuoteManager> instance = new Lazy<QuoteManager>(() => new QuoteManager());
+
+            private IQuoteLoader loader;
+            public static QuoteManager Instance { get => instance.Value; }
+
+            public IList<GreatQuoteViewModel>Quotes { get; set; }
+            
+            private QuoteManager()
+            {
+                Loader = QuoteLoaderFactory.Creater();
+                Quotes = New ObservableCollection<GreateQuoteVIewModel>(loader.Load());
+            }
+
+            public void Save()
+            {
+                loader.Save(Quotes);
+            }
         }
     }
 }

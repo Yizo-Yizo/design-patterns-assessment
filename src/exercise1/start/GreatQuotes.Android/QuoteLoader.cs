@@ -5,9 +5,10 @@ using System.Linq;
 using System.Xml.Linq;
 using GreatQuotes.Data;
 using GreatQuotes.ViewModels;
+using static GreatQuotes.QuoteLoader;
 
 namespace GreatQuotes {
-    public class QuoteLoader {
+    public class QuoteLoader : IQuoteLoader {
         const string FileName = "quotes.xml";
 
         public IEnumerable<GreatQuoteViewModel> Load() {
@@ -52,6 +53,18 @@ namespace GreatQuotes {
                         })));
 
             doc.Save(filename);
+        }
+
+        public interface IQuoteLoader
+        {
+            IEnumerable<GreatQuoteViewModel> Load();
+            void Save(IEnumerable<GreatQuoteViewModel> quotes);
+        }
+
+        public static class QuoteLoadFactory
+        {
+            //This must be assigned to a method which creates a new quote loader.
+            public static Func<IQuoteLoader> Create { get; set; }
         }
 
         #region Internal Data
