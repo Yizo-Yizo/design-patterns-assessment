@@ -61,12 +61,6 @@ namespace GreatQuotes {
             void Save(IEnumerable<GreatQuoteViewModel> quotes);
         }
 
-        public static class QuoteLoadFactory
-        {
-            //This must be assigned to a method which creates a new quote loader.
-            public static Func<IQuoteLoader> Create { get; set; }
-        }
-
         #region Internal Data
         static readonly string DefaultData =
             @"<?xml version=""1.0"" encoding=""UTF-8""?>

@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using Foundation;
-using GreatQuotes.ViewModels;
+﻿using Foundation;
+using GreatQuotes.Data;
 using UIKit;
+using static GreatQuotes.iOS.QuoteLoader;
 
-namespace GreatQuotes.iOS {
+namespace GreatQuotes.iOS
+{
     // The UIApplicationDelegate for the application. This class is responsible for launching the 
     // User Interface of the application, as well as listening (and optionally responding) to 
     // application events from iOS.
     [Register("AppDelegate")]
     public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
     {
-        public MainViewModel GreatQuotesViewModel { get; private set; }
+        readonly SimpleContainer container = new SimpleContainer();
 
         //
         // This method is invoked when the application has loaded and is ready to run. In this 
@@ -25,17 +22,15 @@ namespace GreatQuotes.iOS {
         //
         public override bool FinishedLaunching(UIApplication uiApplication, NSDictionary launchOptions)
         {
-            var quoteLoader = new QuoteLoader();
-            GreatQuotesViewModel = new MainViewModel(() => quoteLoader.Save(GreatQuotesViewModel.Quotes)) {
-                Quotes = new ObservableCollection<GreatQuoteViewModel>(quoteLoader.Load())
-            };
+            container.Register<IQuoteLoader, QuoteLoader>();
+            container.Register<ITextToSpeech, TextToSpeechService>();
+            container.Create<QuoteManager>();
 
             global::Xamarin.Forms.Forms.Init();
-            var app = new App(GreatQuotesViewModel);
-            LoadApplication(app);
+
+            LoadApplication(new App());
 
             return base.FinishedLaunching(uiApplication, launchOptions);
         }
-
     }
 }

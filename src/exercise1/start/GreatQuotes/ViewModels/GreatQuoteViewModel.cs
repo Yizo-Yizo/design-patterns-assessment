@@ -25,5 +25,6 @@ namespace GreatQuotes.ViewModels {
             get => _quoteText; 
             set => SetPropertyValue(ref _quoteText, value); 
         }
+
     }
 }

@@ -4,7 +4,8 @@ using System.Text;
 
 namespace GreatQuotes
 {
-    class ITextToSpeech
+    public interface ITextToSpeech
     {
+        void Speak(string text);
     }
 }

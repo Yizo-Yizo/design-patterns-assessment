@@ -2,7 +2,55 @@
 using System;
 using System.Collections.Generic;
 
-namespace GreatQuotes.Data {
+namespace GreatQuotes.Data
+{
+
+    
+	/// <summary>
+	/// Simple ServiceLocator implementation.
+	/// </summary>
+	public sealed class ServiceLocator
+    {
+        static readonly Lazy<ServiceLocator> instance = new Lazy<ServiceLocator>(() => new ServiceLocator());
+        readonly Dictionary<Type, Lazy<object>> registeredServices = new Dictionary<Type, Lazy<object>>();
+
+        /// <summary>
+        /// Singleton instance for default service locator
+        /// </summary>
+        public static ServiceLocator Instance
+        {
+            get { return instance.Value; }
+        }
+
+        /// <summary>
+        /// Add a new contract + service implementation
+        /// </summary>
+        /// <typeparam name="TContract">Contract type</typeparam>
+        /// <typeparam name="TService">Service type</typeparam>
+        public void Add<TContract, TService>() where TService : new()
+        {
+            this.registeredServices[typeof(TContract)] =
+                new Lazy<object>(() => Activator.CreateInstance(typeof(TService)));
+        }
+
+        /// <summary>
+        /// This resolves a service type and returns the implementation. Note that this
+        /// assumes the key used to register the object is of the appropriate type or
+        /// this method will throw an InvalidCastException!
+        /// </summary>
+        /// <typeparam name="T">Type to resolve</typeparam>
+        /// <returns>Implementation</returns>
+        public T Resolve<T>()
+        {
+            Lazy<object> service;
+            if (registeredServices.TryGetValue(typeof(T), out service))
+            {
+                return (T)service.Value;
+            }
+
+            throw new Exception("No service found for " + typeof(T).Name);
+        }
+    }
     public class GreatQuote {
         private string _author;
         private string _quoteText;
@@ -28,27 +76,6 @@ namespace GreatQuotes.Data {
         public GreatQuote(string author, string quoteText) {
             Author = author;
             QuoteText = quoteText;
-        }
-
-        public class QuoteManager
-        {
-            static readonly Lazy<QuoteManager> instance = new Lazy<QuoteManager>(() => new QuoteManager());
-
-            private IQuoteLoader loader;
-            public static QuoteManager Instance { get => instance.Value; }
-
-            public IList<GreatQuoteViewModel>Quotes { get; set; }
-            
-            private QuoteManager()
-            {
-                Loader = QuoteLoaderFactory.Creater();
-                Quotes = New ObservableCollection<GreateQuoteVIewModel>(loader.Load());
-            }
-
-            public void Save()
-            {
-                loader.Save(Quotes);
-            }
         }
     }
 }
