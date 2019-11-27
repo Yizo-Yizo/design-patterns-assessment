@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GreatQuotes.Data
 {
-    class IQuoteLoader
+    public interface IQuoteLoader
     {
 
         IEnumerable<GreatQuoteViewModel> Load();

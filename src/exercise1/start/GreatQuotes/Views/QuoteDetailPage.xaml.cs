@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GreatQuotes.ViewModels;
+using System;
 using System.Collections.Generic;
 
 using Xamarin.Forms;

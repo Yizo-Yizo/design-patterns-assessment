@@ -55,12 +55,6 @@ namespace GreatQuotes {
             doc.Save(filename);
         }
 
-        public interface IQuoteLoader
-        {
-            IEnumerable<GreatQuoteViewModel> Load();
-            void Save(IEnumerable<GreatQuoteViewModel> quotes);
-        }
-
         #region Internal Data
         static readonly string DefaultData =
             @"<?xml version=""1.0"" encoding=""UTF-8""?>
